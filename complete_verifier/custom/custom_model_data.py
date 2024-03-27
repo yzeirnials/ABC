@@ -22,6 +22,7 @@ python abcrown.py --config exp_configs/tutorial_examples/custom_model_data_examp
 import os
 import torch
 from torch import nn
+from torchvision import models as tvmodels
 from torchvision import transforms
 from torchvision import datasets
 import arguments
@@ -140,3 +141,44 @@ def simple_cifar10(spec):
     # Rescale epsilon.
     ret_eps = torch.reshape(eps / std, (1, -1, 1, 1))
     return X, labels, data_max, data_min, ret_eps
+
+def googlenet():
+    """googlenet model"""
+    model = tvmodels.googlenet(pretrained=False)
+
+    num_ftrs = model.fc.in_features
+    num_classes = arguments.Config["data"]["num_outputs"]
+    model.fc = nn.Linear(num_ftrs, num_classes)
+
+
+    return model
+
+
+def image_folder(spec):
+    eps = spec["epsilon"]
+    assert eps is not None
+
+    database_path = arguments.Config["data"]["data_path"]
+    mean = torch.tensor(arguments.Config["data"]["mean"])
+    std = torch.tensor(arguments.Config["data"]["std"])
+    normalize = transforms.Normalize(mean=mean, std=std)
+    transform = transforms.Compose([
+        transforms.Resize((32, 32)),  # Resize images to a fixed size (adjust as needed).
+        transforms.ToTensor(),
+        normalize,
+    ])
+    
+    test_data = datasets.ImageFolder(root=database_path, transform=transform)
+    test_loader = torch.utils.data.DataLoader(test_data,\
+            batch_size=10000, shuffle=False, num_workers=4)
+    X, labels = next(iter(test_loader))
+
+     # Set data_max and data_min for clipping, adjust these based on your normalization and dataset.
+    data_max = torch.reshape((1. - mean) / std, (1, -1, 1, 1))
+    data_min = torch.reshape((0. - mean) / std, (1, -1, 1, 1))
+    # Rescale epsilon
+    ret_eps = torch.reshape(eps / std, (1, -1, 1, 1))
+    
+    return X, labels, data_max, data_min, ret_eps
+    
+    

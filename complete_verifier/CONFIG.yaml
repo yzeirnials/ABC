@@ -1,0 +1,34 @@
+attack:
+  pgd_restarts: 30
+  pgd_steps: 100
+bab:
+  branching:
+    candidates: 3
+    method: kfsb
+    reduceop: min
+  timeout: 100
+data:
+  dataset: Customized("custom_model_data", "image_folder")
+  data_path: /home/Cyz0327/sample_data/mnist
+  num_outputs: 10
+general:
+  deterministic: false
+  double_fp: false
+  precompile_jit: false
+  results_file: /home/Cyz0327/sample_data/output.txt
+  seed: 100
+model:
+  name: resnet2b  # This model is defined in model_defs.py. Add your own model definitions there.
+  path: models/cifar10_resnet/resnet2b.pth  # Path to PyTorch checkpoint.
+solver:
+  alpha-crown:
+    iteration: 100
+    lr_alpha: 0.1
+  batch_size: 2048
+  beta-crown:
+    iteration: 20
+    lr_alpha: 0.01
+    lr_beta: 0.05
+specification:
+  epsilon: 0.00784313725490196
+  norm: '.inf'

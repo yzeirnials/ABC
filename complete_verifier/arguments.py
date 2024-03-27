@@ -215,6 +215,10 @@ class ConfigHandler:
         self.add_argument("--data_idx_file", type=str, default=None,
                           help='A text file with a list of example IDs to run.',
                           hierarchy=h + ["data_idx_file"])
+        # modified
+        self.add_argument("--data_path", type=str, default=None,
+                          help='Where to data stores.',
+                          hierarchy=h + ["data_path"])
 
         h = ["specification"]
         self.add_argument("--spec_type", type=str, default='lp', choices=['lp', 'box'],
@@ -865,6 +869,7 @@ class ConfigHandler:
                 if nonexist_ok:
                     current_level[config_name] = {}
                 else:
+                    # print(self.all_args['solver']['alpha-crown'])
                     raise ValueError(f"Config key {h} not found!")
             last_level = current_level
             current_level = current_level[config_name]
@@ -949,6 +954,7 @@ class ConfigHandler:
             self.file = specified_args['config']
             with open(self.file, 'r') as file:
                 loaded_args = yaml.safe_load(file)
+                # print(loaded_args['solver']['alpha_crown']['iteration'])
                 # Update the defaults with the parameters in the config file.
                 self.update_config_dict(self.all_args, loaded_args)
         # Finally, override the parameters based on commandline arguments.

@@ -1,6 +1,8 @@
 # Example for using customized model and data loader.
 # Model and data loader defined in custom_model_data.py
 # python abcrown.py --config exp_configs/tutorial_examples/custom_model_data_example.yaml
+general:
+  results_file: output.txt
 model:
   # Use the simple_conv_model in "custom_model_data.py".
   name: Customized("custom_model_data", "simple_conv_model", in_channel=3, out_dim=10)

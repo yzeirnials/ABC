@@ -3,6 +3,7 @@ import collections
 import gzip
 from ast import literal_eval
 import torch
+import torchvision
 import numpy as np
 
 import onnx2pytorch
@@ -240,8 +241,48 @@ def load_model(weights_loaded=True):
 
     assert arguments.Config["model"]["name"] is not None or arguments.Config["model"]["onnx_path"] is not None, (
         "No model is loaded, please set --model <modelname> for pytorch model or --onnx_path <filename> for onnx model.")
+    
+    # if arguments.Config['model']['name'] == 'googlenet':
+    #     model_path =arguments.Config['model']['path']
+    #     assert model_path is not None, ("No model path detected for googlenet!")
+    #     # Initialize GoogleNet
+    #     # model_ori = torchvision.models.googlenet(pretrained=False)
+    #     # Modify the final layer to match the number of classes
+    #     # model_ori.fc = torch.nn.Linear(model_ori.fc.in_features, arguments.Config['data']['num_outputs'])
+        
+    #     if weights_loaded:
+    #         # Load the model weights from the provided path
+    #         sd = torch.load(model_path, map_location=torch.device('cpu'))
+    #         if 'state_dict' in sd:
+    #             sd = sd['state_dict']
+    #         if isinstance(sd, list):
+    #             sd = sd[0]
+    #         if not isinstance(sd, dict):
+    #             raise NotImplementedError("Unknown model format, please modify model loader yourself.")
+            
+    #         # Apply the loaded weights to the model
+    #         try:
+    #             model_ori.load_state_dict(sd)
+    #         except RuntimeError as e:
+    #             print('Failed to load the model:', e)
+    #             print('Keys in the state_dict of model_ori:')
+    #             print(list(model_ori.state_dict().keys()))
+    #             print('Keys in the state_dict trying to load:')
+    #             print(list(sd.keys()))
+    #             raise
+                
+    #     model_ori.eval()  # Set the model to evaluation mode
+    if arguments.Config['model']['name'] == 'custom':
+        
+        model_path = arguments.Config['model']['path']
+        assert model_path is not None, ("No model path detected for customized model!")
+        if weights_loaded:
+            model_ori = torch.load(model_path, map_location=torch.device('cpu'))
+            print("!!!!type: " + str(type(model_ori)))
 
-    if arguments.Config['model']['name'] is not None:
+            model_ori.eval()
+
+    elif arguments.Config['model']['name'] is not None:
         # You can customize this function to load your own model based on model name.
         try:
             model_ori = eval(arguments.Config['model']['name'])()  # pylint: disable=eval-used
