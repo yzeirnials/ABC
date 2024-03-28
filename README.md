@@ -1,12 +1,17 @@
 # 说明
-1. 工具运行需求参见 ``./complete_verifier/environment.yaml`` ，使用`conda`创建虚拟环境：
+解压后
+```shell
+cd ABC-main
+```
+
+1. 工具运行需求参见 `./complete_verifier/environment.yaml`，如果链接失效亦可使用`./complete_verifier/environment_pyt111.yaml`。使用`conda`创建虚拟环境：
 ```shell
 conda deactivate
 conda env remove --name abcrown
 conda env create -f complete_verifier/environment.yaml --name abcrown
 conda activate abcrown
 ```
-2. 使用时如果出现auto_LiPRA相关库缺失的情况，请先编译`auto_LiRPA`，如果没有直接跳转至步骤3即可
+2. 如果目录下auto_LiPRA/文件夹内容缺失的情况，请先参照如下步骤编译`auto_LiRPA`，如果没有直接跳转至步骤3即可
 ```shell
 # git clone the original repository when needed
 git clone https://github.com/Verified-Intelligence/auto_LiRPA
