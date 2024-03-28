@@ -139,6 +139,8 @@ class ConfigHandler:
         h = ["model"]
         self.add_argument("--model", type=str, default=None, help='Model name. Will be evaluated as a python statement.',
                           hierarchy=h + ["name"])
+        self.add_argument("--structure", type=str, default=None, help='Model stucture. Used for prima model loading.',
+                          hierarchy=h + ["structure"])
         self.add_argument("--load_model", type=str, default=None,
                           help='Load pretrained model from this specified path.',
                           hierarchy=h + ["path"])

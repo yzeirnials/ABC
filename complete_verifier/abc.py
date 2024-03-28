@@ -6,6 +6,8 @@ import sys
 import time
 import socket
 
+yaml_file_name = "CONFIG.yaml"
+
 def json_to_yaml(json_file_path):
 
     with open(json_file_path, 'r') as json_file:
@@ -25,16 +27,17 @@ def json_to_yaml(json_file_path):
         original_data['attack'] = {}  
 
     general_updated = original_data['general'].copy()
-    general_updated['results_file'] = original_data['outputPath'] + '/output.txt'
+    general_updated['results_file'] = original_data['outputPath']
 
     model_updated = original_data['model'].copy()
     model_updated['name'] = original_data['modelName']
     model_updated['path'] = original_data['modelPath']
-    # model_updated['structure'] = original_data['modelStructure']
+    model_updated['structure'] = original_data['modelStructure']
 
     data_updated = original_data['data'].copy()
     data_updated['num_outputs'] = original_data['numClasses']
     data_updated['data_path'] = original_data['picPath']
+    data_updated['dataset'] = "Customized(\"custom_model_data\", \"image_folder\")"
 
     bab_updated = original_data['bab'].copy()
     bab_updated['timeout'] = original_data['timeout']
@@ -50,7 +53,6 @@ def json_to_yaml(json_file_path):
     }
 
     currDir = os.getcwd()
-    yaml_file_name = "CONFIG.yaml"
     yaml_file_path = os.path.join(currDir, yaml_file_name)
     
     with open(yaml_file_path, 'w') as yaml_file:
@@ -66,7 +68,7 @@ class ABC:
     
     def main(self):
         print(f'Experiments at {time.ctime()} on {socket.gethostname()}')
-        # subprocess.run(["python", "abcrown.py", "--config", self.YamlPath])
+        subprocess.run(["python", "abcrown.py", "--config", yaml_file_name])
 
 
 

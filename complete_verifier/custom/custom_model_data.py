@@ -21,12 +21,36 @@ python abcrown.py --config exp_configs/tutorial_examples/custom_model_data_examp
 
 import os
 import torch
+import prima
 from torch import nn
 from torchvision import models as tvmodels
 from torchvision import transforms
 from torchvision import datasets
 import arguments
 
+def load_prima_model(modelStructure, numClasses, modelPath, device):
+    # modelStructure = 'Resnet34'
+    # numClasses = 100
+    # device = torch.cuda()
+    # modelPath = 'xxx.pth'
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    m = prima.CONFESSION[modelStructure](num_classes=numClasses).to(device)
+    m.load_state_dict(torch.load(modelPath,map_location=device))
+
+    return m
+
+# CONFESSION = {
+#     'Inception_v3': inception_v3,
+#     "Resnet18": resnet18,
+#     "Resnet34": resnet34,
+#     "Resnet50": resnet50,
+#     "GoogleNet": googlenet,
+#     "Mobilenet": mobilenet,
+#     "YOLOv4": yolonet,
+#     "Yolonet": yolonet, 
+#     "Flownets" : flownets
+# }
 
 def simple_conv_model(in_channel, out_dim):
     """Simple Convolutional model."""
@@ -153,17 +177,31 @@ def googlenet():
 
     return model
 
+# CONFESSION_SIZE = {
+#     'Inception_v3': 299,
+#     "Resnet18": 224,
+#     "Resnet34": 224,
+#     "Resnet50": 224,
+#     "GoogleNet": 299,
+#     "Mobilenet": 224,
+#     "YOLOv4": 416,
+#     "Yolonet": 416, 
+#     'Flownets' : 320
+# }
+
 
 def image_folder(spec):
     eps = spec["epsilon"]
     assert eps is not None
 
+    model_structure = arguments.Config['model']['structure']
+    confess_size = prima.CONFESSION_SIZE[model_structure]
     database_path = arguments.Config["data"]["data_path"]
     mean = torch.tensor(arguments.Config["data"]["mean"])
     std = torch.tensor(arguments.Config["data"]["std"])
     normalize = transforms.Normalize(mean=mean, std=std)
     transform = transforms.Compose([
-        transforms.Resize((32, 32)),  # Resize images to a fixed size (adjust as needed).
+        transforms.Resize((confess_size, confess_size)),  # Resize images to a fixed size (adjust as needed).
         transforms.ToTensor(),
         normalize,
     ])

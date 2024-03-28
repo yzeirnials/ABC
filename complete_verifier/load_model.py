@@ -3,6 +3,7 @@ import collections
 import gzip
 from ast import literal_eval
 import torch
+import prima
 import torchvision
 import numpy as np
 
@@ -230,6 +231,18 @@ def debug_onnx(onnx_model, pytorch_model, dummy_input):
     import pdb; pdb.set_trace()
 
 
+def load_prima_model(modelStructure, numClasses, modelPath, device):
+    # modelStructure = 'Resnet34'
+    # numClasses = 100
+    # device = torch.cuda()
+    # modelPath = 'xxx.pth'
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    m = prima.CONFESSION[modelStructure](num_classes=numClasses).to(device)
+    m.load_state_dict(torch.load(modelPath,map_location=device))
+
+    return m
+
 def load_model(weights_loaded=True):
     """
     Load the model architectures and weights
@@ -272,14 +285,20 @@ def load_model(weights_loaded=True):
     #             raise
                 
     #     model_ori.eval()  # Set the model to evaluation mode
-    if arguments.Config['model']['name'] == 'custom':
+    if arguments.Config['model']['name'] == 'prima':
         
         model_path = arguments.Config['model']['path']
-        assert model_path is not None, ("No model path detected for customized model!")
-        if weights_loaded:
-            model_ori = torch.load(model_path, map_location=torch.device('cpu'))
-            print("!!!!type: " + str(type(model_ori)))
+        model_structure = arguments.Config['model']['structure']
+        num_classes = arguments.Config['data']['num_outputs']
 
+        assert model_path is not None, ("No model path detected for prima model!")
+        assert model_structure is not None, ("No prima model structure detected! ")
+        if weights_loaded:
+            # model_ori = torch.load(model_path, map_location=torch.device('cpu'))
+            # print("!!!!type: " + str(type(model_ori)))
+            model_ori = load_prima_model(modelStructure=model_structure, numClasses=num_classes, modelPath=model_path, device=torch.device('cuda'))
+            # m = prima.CONFESSION[modelStructure](num_classes=numClasses).to(device)
+            # m.load_state_dict(torch.load(modelPath,map_location=device))
             model_ori.eval()
 
     elif arguments.Config['model']['name'] is not None:

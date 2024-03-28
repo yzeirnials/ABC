@@ -1,0 +1,37 @@
+attack:
+  pgd_order: before
+  pgd_restarts: 30
+  pgd_steps: 100
+bab:
+  branching:
+    candidates: 3
+    method: kfsb
+    reduceop: min
+  timeout: 100
+data:
+  data_path: /home/Cyz0327/sample_data/mnist
+  dataset: Customized("custom_model_data", "image_folder")
+  num_outputs: 19
+general:
+  deterministic: false
+  device: cuda
+  double_fp: false
+  precompile_jit: false
+  results_file: /home/Cyz0327/sample_data/output.json
+  save_output: true
+  seed: 100
+model:
+  name: prima
+  path: /home/Cyz0327/sample_data/trained_modelmobilenet_WHU-RS19.pth
+  structure: Mobilenet
+solver:
+  alpha-crown:
+    iteration: 100
+    lr_alpha: 0.1
+  batch_size: 2048
+  beta-crown:
+    iteration: 20
+    lr_alpha: 0.01
+    lr_beta: 0.05
+specification:
+  epsilon: 0.00784313725490196

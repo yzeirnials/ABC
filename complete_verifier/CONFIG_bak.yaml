@@ -11,8 +11,9 @@ bab:
 data:
   dataset: Customized("custom_model_data", "image_folder")
   data_path: /home/Cyz0327/sample_data/mnist-simple
-  num_outputs: 10
+  num_outputs: 19
 general:
+  device: cuda
   deterministic: false
   double_fp: false
   precompile_jit: false
@@ -21,8 +22,21 @@ general:
   save_output: true
   output_path: /home/Cyz0327/sample_data/mnist-output
 model:
-  name: resnet2b  # This model is defined in model_defs.py. Add your own model definitions there.
-  path: models/cifar10_resnet/resnet2b.pth  # Path to PyTorch checkpoint.
+  
+  # name: resnet2b  # This model is defined in model_defs.py. Add your own model definitions there.
+  # path: models/cifar10_resnet/resnet2b.pth  # Path to PyTorch checkpoint.
+  name: prima
+  # structure: GoogleNet
+  # path: /home/Cyz0327/sample_data/trained_modelgooglenet_mnist.pth
+  
+  # structure: Mobilenet
+  # path: /home/Cyz0327/sample_data/trained_modelmobilenet_WHU-RS19.pth
+  
+  structure: Resnet18
+  path: /home/Cyz0327/sample_data/trained_model18_WHU-RS19.pth
+ 
+
+
 solver:
   alpha-crown:
     iteration: 100

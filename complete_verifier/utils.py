@@ -270,7 +270,7 @@ def get_data_index(data_folder_path, target_path):
     counter = 0
     for folder, files in folders.items():
         for file in files:
-            pathlist.append(f"{target_path}/{folder}/{file}")
+            pathlist.append(f"{arguments.Config['data']['data_path']}/{folder}/{file}")
             index.append(counter)
             counter += 1
 
