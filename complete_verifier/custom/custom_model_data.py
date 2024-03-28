@@ -119,7 +119,7 @@ def cifar10(spec, use_bounds=False):
 
 
 def simple_cifar10(spec):
-    """Example dataloader. For MNIST and CIFAR you can actually use existing ones in utils.py."""
+    """Dataloader. For MNIST and CIFAR you can actually use existing ones in utils.py."""
     eps = spec["epsilon"]
     assert eps is not None
     database_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')

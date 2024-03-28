@@ -1,6 +1,7 @@
 attack:
-  pgd_restarts: 30
-  pgd_steps: 100
+  pgd_order: skip
+  pgd_restarts: 5
+  pgd_steps: 10
 bab:
   branching:
     candidates: 3
@@ -31,4 +32,4 @@ solver:
     lr_beta: 0.05
 specification:
   epsilon: 0.00784313725490196
-  norm: '.inf'
+
