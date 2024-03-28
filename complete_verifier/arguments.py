@@ -64,8 +64,10 @@ class ConfigHandler:
         self.add_argument("--device", type=str, default="cuda", choices=["cpu", "cuda"],
                           help='Select device to run verifier, cpu or cuda (GPU).',
                           hierarchy=h + ["device"])
+        self.add_argument("--output_path", type=str, default=".", help='Path to save some pics.',
+                          hierarchy=h + ["output_path"])
         self.add_argument("--seed", type=int, default=100, help='Random seed.',
-                          hierarchy=h + ["seed"])
+                          hierarchy=h + ["seed"]) 
         self.add_argument("--conv_mode", default="patches", choices=["patches", "matrix"],
                           help='Convolution mode during bound propagation: "patches" mode (default) is very efficient, but may not support all architecture; "matrix" mode is slow but supports all architectures.',
                           hierarchy=h + ["conv_mode"])
@@ -109,7 +111,7 @@ class ConfigHandler:
         self.add_argument("--csv_name", type=str, default=None,
                           help='Name of .csv file containing a list of properties to verify (VNN-COMP specific).',
                           hierarchy=h + ["csv_name"])
-        self.add_argument("--results_file", type=str, default='out.txt',
+        self.add_argument("--results_file", type=str, default='results.json',
                           help='Path to results file.',
                           hierarchy=h + ["results_file"])
         self.add_argument("--root_path", type=str, default='',

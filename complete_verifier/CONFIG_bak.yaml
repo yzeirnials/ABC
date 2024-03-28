@@ -1,7 +1,7 @@
 attack:
-  pgd_order: skip
-  pgd_restarts: 5
-  pgd_steps: 10
+  pgd_order: before
+  pgd_restarts: 10
+  pgd_steps: 100
 bab:
   branching:
     candidates: 3
@@ -10,14 +10,16 @@ bab:
   timeout: 100
 data:
   dataset: Customized("custom_model_data", "image_folder")
-  data_path: /home/Cyz0327/sample_data/mnist
+  data_path: /home/Cyz0327/sample_data/mnist-simple
   num_outputs: 10
 general:
   deterministic: false
   double_fp: false
   precompile_jit: false
-  results_file: /home/Cyz0327/sample_data/output.txt
+  results_file: /home/Cyz0327/sample_data/output.json
   seed: 100
+  save_output: true
+  output_path: /home/Cyz0327/sample_data/mnist-output
 model:
   name: resnet2b  # This model is defined in model_defs.py. Add your own model definitions there.
   path: models/cifar10_resnet/resnet2b.pth  # Path to PyTorch checkpoint.

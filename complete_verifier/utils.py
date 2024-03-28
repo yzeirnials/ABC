@@ -15,6 +15,7 @@
 
 import copy
 import os
+import json
 import time
 import pickle
 import arguments
@@ -194,6 +195,36 @@ class Logger:
                 with open(arguments.Config['general']['output_file'], 'wb') as f:
                     pickle.dump(arguments.Globals['out'], f)
                 print(f"Result dict saved to {arguments.Config['general']['output_file']}.")
+                
+                count = len(self.verification_summary['safe']) + len(self.verification_summary['unsafe-pgd']) + len(self.verification_summary['safe-incomplete'])
+                safeIncomplete_count = len(self.verification_summary['safe-incomplete'])
+                safeComplete_count = len(self.verification_summary['safe'])
+                adv_count = safeComplete_count + safeIncomplete_count
+
+                (folders, pathlist, indexlist) = get_data_index(arguments.Config['data']['data_path'], arguments.Config['general']['output_path'])
+
+                results_dict = {
+                    # 'folders' : folders,
+                    'pathlist' : pathlist,
+                    # 'indexlist' : indexlist,
+                    'safe' : self.verification_summary['safe'] + self.verification_summary['safe-incomplete'],
+                    'unsafe' : self.verification_summary['unsafe-pgd'],
+                    'safe-complete' : self.verification_summary['safe'],
+                    'safe-incomplete' : self.verification_summary['safe-incomplete'],
+                    'count' : count,
+                    'adv_count' : adv_count,
+                    'safe-complete count' : safeComplete_count,
+                    'safe-incomplete count' : safeIncomplete_count,
+                    'rate' : adv_count / count,
+                    "picPath" : arguments.Config['data']['data_path']
+                }
+
+                
+
+                with open(arguments.Config['general']['results_file'], 'w') as f:
+                    json.dump(results_dict, f, indent = 4)  
+                print(f"Save_path: {arguments.Config['general']['results_file']}")
+
 
 
     def _save(self):
@@ -212,6 +243,39 @@ class Stats:
         self.all_node_split = False
         self.implied_cuts = {'statistics': [], 'average_branched_neurons': []}
 
+
+def get_data_index(data_folder_path, target_path):
+    folders = {}
+    pathlist = []
+    index = []
+    
+    for root, dirs, files in os.walk(data_folder_path):
+        for dir in dirs:
+            folder_path = os.path.join(root, dir)
+            folder_files = os.listdir(folder_path)
+            
+            folder_files = [file for file in folder_files if file.endswith('.jpg')]
+            if folder_files:  
+                relative_folder_path = os.path.relpath(folder_path, data_folder_path)
+                folders[relative_folder_path] = folder_files
+
+    # counter = 0  
+    # for folder in folders:
+    #     for file in folders[folder]:
+    #         full_path = f"{target_path}/{file}"
+    #         pathlist.append(full_path)
+    #         index.append(counter)
+    #         counter += 1
+
+    counter = 0
+    for folder, files in folders.items():
+        for file in files:
+            pathlist.append(f"{target_path}/{folder}/{file}")
+            index.append(counter)
+            counter += 1
+
+    return folders, pathlist, index
+ 
 
 def get_reduce_op(op):
     """Convert reduce op in str to the actual function."""
